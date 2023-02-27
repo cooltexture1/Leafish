@@ -35,12 +35,12 @@ use crate::screen::ScreenType::Other;
 use crate::ui;
 use crate::ui::Container;
 use crate::{render, Game};
+use glutin::dpi::{PhysicalPosition, Position};
+use glutin::event::VirtualKeyCode;
+use glutin::window::Window;
 use parking_lot::{Mutex, RwLock};
 use std::sync::atomic::{AtomicIsize, Ordering};
 use std::sync::Arc;
-use winit::dpi::{PhysicalPosition, Position};
-use winit::event::VirtualKeyCode;
-use winit::window::Window;
 
 pub trait Screen {
     // Called once

@@ -230,11 +230,11 @@ fn main() {
     let (res, mut resui) = resources::Manager::new();
     let resource_manager = Arc::new(RwLock::new(res));
 
-    let events_loop = winit::event_loop::EventLoop::new();
+    let events_loop = glutin::event_loop::EventLoop::new();
 
-    let window_builder = winit::window::WindowBuilder::new()
+    let window_builder = glutin::window::WindowBuilder::new()
         .with_title("Leafish")
-        .with_inner_size(winit::dpi::LogicalSize::new(854.0, 480.0))
+        .with_inner_size(glutin::dpi::LogicalSize::new(854.0, 480.0))
         .with_maximized(true); // Why are we using this particular value here?
 
     let (context, shader_version, dpi_factor, glutin_window) = {
@@ -356,27 +356,27 @@ fn main() {
     let game = Rc::clone(&game);
     let ui_container = Rc::clone(&ui_container);
     events_loop.run(move |event, _event_loop, control_flow| {
-        let winit_window = glutin_window.window();
+        let window = glutin_window.window();
 
         let mut game = game.borrow_mut();
         let mut ui_container = ui_container.borrow_mut();
-        *control_flow = winit::event_loop::ControlFlow::Poll;
+        *control_flow = glutin::event_loop::ControlFlow::Poll;
 
-        if let winit::event::Event::WindowEvent {
-            event: winit::event::WindowEvent::Resized(physical_size),
+        if let glutin::event::Event::WindowEvent {
+            event: glutin::event::WindowEvent::Resized(physical_size),
             ..
         } = event
         {
             glutin_window.resize(physical_size);
         }
 
-        if !handle_window_event(winit_window, &mut game, &mut ui_container, event) {
+        if !handle_window_event(window, &mut game, &mut ui_container, event) {
             return;
         }
 
         let start = Instant::now();
         tick_all(
-            winit_window,
+            window,
             &mut game,
             &mut ui_container,
             &mut last_frame,
@@ -393,7 +393,7 @@ fn main() {
             .expect("Failed to swap GL buffers");
 
         if game.should_close {
-            *control_flow = winit::event_loop::ControlFlow::Exit;
+            *control_flow = glutin::event_loop::ControlFlow::Exit;
         }
     });
 }
@@ -401,7 +401,7 @@ fn main() {
 const DEBUG: bool = false;
 
 fn tick_all(
-    window: &winit::window::Window,
+    window: &glutin::window::Window,
     game: &mut Game,
     ui_container: &mut ui::Container,
     last_frame: &mut Instant,
@@ -516,13 +516,13 @@ fn tick_all(
         .tick(delta, game.renderer.clone(), ui_container, window)
     {
         window
-            .set_cursor_grab(winit::window::CursorGrabMode::None)
+            .set_cursor_grab(glutin::window::CursorGrabMode::None)
             .unwrap();
         window.set_cursor_visible(true);
         game.focused = false;
     } else {
         window
-            .set_cursor_grab(winit::window::CursorGrabMode::Locked)
+            .set_cursor_grab(glutin::window::CursorGrabMode::Locked)
             .unwrap();
         window.set_cursor_visible(false);
         game.focused = true;
@@ -562,12 +562,12 @@ fn tick_all(
 // TODO: Reenable: [server/mod.rs:1924][WARN] Block entity at (1371,53,-484) missing id tag: NamedTag("", Compound({"y": Int(53), "Sign": String(""), "x": Int(1371), "z": Int(-484)}))
 
 fn handle_window_event<T>(
-    window: &winit::window::Window,
+    window: &glutin::window::Window,
     game: &mut Game,
     ui_container: &mut ui::Container,
-    event: winit::event::Event<T>,
+    event: glutin::event::Event<T>,
 ) -> bool {
-    use winit::event::*;
+    use glutin::event::*;
     match event {
         Event::MainEventsCleared => return true,
         Event::DeviceEvent {
@@ -600,7 +600,7 @@ fn handle_window_event<T>(
 
             if game.focused {
                 window
-                    .set_cursor_grab(winit::window::CursorGrabMode::Locked)
+                    .set_cursor_grab(glutin::window::CursorGrabMode::Locked)
                     .unwrap();
                 window.set_cursor_visible(false);
                 if game.server.is_some()
@@ -633,7 +633,7 @@ fn handle_window_event<T>(
                 }
             } else {
                 window
-                    .set_cursor_grab(winit::window::CursorGrabMode::None)
+                    .set_cursor_grab(glutin::window::CursorGrabMode::None)
                     .unwrap();
                 window.set_cursor_visible(true);
             }
@@ -734,9 +734,11 @@ fn handle_window_event<T>(
                             if !game.is_fullscreen {
                                 // TODO: support options for exclusive and simple fullscreen
                                 // see https://docs.rs/glutin/0.22.0-alpha5/glutin/window/struct.Window.html#method.set_fullscreen
-                                window.set_fullscreen(Some(winit::window::Fullscreen::Borderless(
-                                    window.current_monitor(),
-                                )));
+                                window.set_fullscreen(Some(
+                                    glutin::window::Fullscreen::Borderless(
+                                        window.current_monitor(),
+                                    ),
+                                ));
                             } else {
                                 window.set_fullscreen(None);
                             }

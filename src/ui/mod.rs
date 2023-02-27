@@ -16,10 +16,10 @@ pub mod logo;
 
 use crate::format;
 use crate::render;
+use glutin::event::VirtualKeyCode;
 use std::cell::{RefCell, RefMut};
 use std::rc::{Rc, Weak};
 use std::sync::Arc;
-use winit::event::VirtualKeyCode;
 
 const SCALED_WIDTH: f64 = 854.0;
 const SCALED_HEIGHT: f64 = 480.0;

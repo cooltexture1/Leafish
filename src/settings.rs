@@ -1,7 +1,7 @@
 use crate::console;
 use crate::console::CVar;
+use glutin::event::VirtualKeyCode;
 use std::marker::PhantomData;
-use winit::event::VirtualKeyCode;
 
 pub const R_MAX_FPS: console::CVar<i64> = console::CVar {
     ty: PhantomData,
