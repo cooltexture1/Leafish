@@ -164,4 +164,8 @@ Thanks to [@thinkofname](https://github.com/thinkofname/) for the original [Stev
 
 ## License
 
+up to commit 39fdad3b0b18d899fb8b031e713daa52303d4e74 (Feb. 5. 2023): 
 Dual-licensed MIT and ApacheV2
+
+after the commit:
+GPLv3 or Later
